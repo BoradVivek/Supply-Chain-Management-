@@ -1,0 +1,1981 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VendorLink - Local Vendor Management System</title>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff7e5f;
+            --text-color: #333;
+            --light-text: #666;
+            --border-color: #e1e4e8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+        }
+
+        .tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5bef;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+        }
+
+        .badge-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn {
+            padding: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: var(--light-text);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+            animation: modalFadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .alert {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .close-alert {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .reminder-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .reminder-title {
+            font-weight: 600;
+        }
+
+        .reminder-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .today-reminders {
+            border-left-color: #dc3545;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: var(--secondary-color);
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .table th, .table td {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-img">V</div>
+                    <div class="logo-text">VendorLink</div>
+                </div>
+                <div>
+                    <button class="btn btn-secondary" id="premium-btn">Upgrade to Premium</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="vendors">Vendors</div>
+            <div class="tab" data-tab="services">Services</div>
+            <div class="tab" data-tab="interactions">Interactions</div>
+            <div class="tab" data-tab="reminders">Reminders</div>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <!-- Vendors Tab -->
+        <div class="tab-content active" id="vendors-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Vendor Directory</div>
+                    <button class="btn btn-primary" id="add-vendor-btn">Add New Vendor</button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="vendor-search" class="search-input" placeholder="Search vendors...">
+                    <select id="vendor-filter">
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="vendors-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Services</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vendors-list">
+                            <!-- Vendors will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-vendors" class="no-data">No vendors found. Add your first vendor to get started.</div>
+            </div>
+        </div>
+
+        <!-- Services Tab -->
+        <div class="tab-content" id="services-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Service Catalog</div>
+                    <button class="btn btn-primary" id="add-service-btn">Add New Service</button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="service-search" class="search-input" placeholder="Search services...">
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="services-table">
+                        <thead>
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Category</th>
+                                <th>Vendors</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-list">
+                            <!-- Services will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-services" class="no-data">No services found. Add your first service to get started.</div>
+            </div>
+        </div>
+
+        <!-- Interactions Tab -->
+        <div class="tab-content" id="interactions-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Interaction History</div>
+                    <button class="btn btn-primary" id="add-interaction-btn">Add New Interaction</button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="interaction-vendor-filter" class="search-input" placeholder="Filter by vendor...">
+                    <select id="interaction-type-filter">
+                        <option value="all">All Types</option>
+                        <option value="order">Order</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="payment">Payment</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" id="interactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Vendor</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interactions-list">
+                            <!-- Interactions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-interactions" class="no-data">No interactions found. Add your first interaction to get started.</div>
+            </div>
+        </div>
+
+        <!-- Reminders Tab -->
+        <div class="tab-content" id="reminders-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Upcoming Reminders</div>
+                    <button class="btn btn-primary" id="add-reminder-btn">Add New Reminder</button>
+                </div>
+                <div id="reminders-list">
+                    <!-- Reminders will be populated here -->
+                </div>
+                <div id="no-reminders" class="no-data">No reminders found. Add your first reminder to get started.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Modal -->
+    <div class="modal" id="vendor-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="vendor-modal-title">Add New Vendor</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="vendor-form">
+                <input type="hidden" id="vendor-id">
+                <div class="form-group">
+                    <label for="vendor-name">Vendor Name *</label>
+                    <input type="text" id="vendor-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="vendor-contact">Contact Person</label>
+                    <input type="text" id="vendor-contact">
+                </div>
+                <div class="form-group">
+                    <label for="vendor-phone">Phone Number</label>
+                    <input type="tel" id="vendor-phone">
+                </div>
+                <div class="form-group">
+                    <label for="vendor-email">Email</label>
+                    <input type="email" id="vendor-email">
+                </div>
+                <div class="form-group">
+                    <label for="vendor-address">Address</label>
+                    <textarea id="vendor-address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vendor-services">Services</label>
+                    <div id="vendor-service-tags"></div>
+                    <select id="vendor-services" multiple>
+                        <!-- Services will be populated here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vendor-terms">Payment Terms</label>
+                    <input type="text" id="vendor-terms">
+                </div>
+                <div class="form-group">
+                    <label for="vendor-status">Status</label>
+                    <select id="vendor-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vendor-notes">Notes</label>
+                    <textarea id="vendor-notes"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-vendor-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Vendor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Service Modal -->
+    <div class="modal" id="service-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="service-modal-title">Add New Service</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="service-form">
+                <input type="hidden" id="service-id">
+                <div class="form-group">
+                    <label for="service-name">Service Name *</label>
+                    <input type="text" id="service-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="service-category">Category</label>
+                    <input type="text" id="service-category">
+                </div>
+                <div class="form-group">
+                    <label for="service-description">Description</label>
+                    <textarea id="service-description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="service-vendors">Vendors Offering This Service</label>
+                    <select id="service-vendors" multiple>
+                        <!-- Vendors will be populated here -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-service-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Service</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Interaction Modal -->
+    <div class="modal" id="interaction-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="interaction-modal-title">Add New Interaction</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="interaction-form">
+                <input type="hidden" id="interaction-id">
+                <div class="form-group">
+                    <label for="interaction-date">Date *</label>
+                    <input type="date" id="interaction-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="interaction-vendor">Vendor *</label>
+                    <select id="interaction-vendor" required>
+                        <option value="">Select Vendor</option>
+                        <!-- Vendors will be populated here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="interaction-type">Interaction Type *</label>
+                    <select id="interaction-type" required>
+                        <option value="order">Order</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="payment">Payment</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="interaction-details">Details</label>
+                    <textarea id="interaction-details"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="interaction-amount">Amount</label>
+                    <input type="number" id="interaction-amount" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="interaction-reference">Reference Number</label>
+                    <input type="text" id="interaction-reference">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-interaction-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Interaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reminder Modal -->
+    <div class="modal" id="reminder-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="reminder-modal-title">Add New Reminder</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="reminder-form">
+                <input type="hidden" id="reminder-id">
+                <div class="form-group">
+                    <label for="reminder-title">Title *</label>
+                    <input type="text" id="reminder-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="reminder-date">Due Date *</label>
+                    <input type="date" id="reminder-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="reminder-vendor">Related Vendor</label>
+                    <select id="reminder-vendor">
+                        <option value="">Select Vendor (Optional)</option>
+                        <!-- Vendors will be populated here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reminder-type">Reminder Type</label>
+                    <select id="reminder-type">
+                        <option value="followup">Follow-up</option>
+                        <option value="renewal">Contract Renewal</option>
+                        <option value="payment">Payment</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reminder-notes">Notes</label>
+                    <textarea id="reminder-notes"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-reminder-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Reminder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <div class="modal-title" id="confirm-modal-title">Confirm Action</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="confirm-message">Are you sure you want to perform this action?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-confirm-btn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-action-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data stores
+        let vendors = JSON.parse(localStorage.getItem('vendors')) || [];
+        let services = JSON.parse(localStorage.getItem('services')) || [];
+        let interactions = JSON.parse(localStorage.getItem('interactions')) || [];
+        let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+
+        // DOM Elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const alertContainer = document.getElementById('alert-container');
+
+        // Vendor elements
+        const vendorsList = document.getElementById('vendors-list');
+        const noVendors = document.getElementById('no-vendors');
+        const vendorSearch = document.getElementById('vendor-search');
+        const vendorFilter = document.getElementById('vendor-filter');
+        const vendorModal = document.getElementById('vendor-modal');
+        const vendorForm = document.getElementById('vendor-form');
+        const vendorServiceTags = document.getElementById('vendor-service-tags');
+        const vendorServicesSelect = document.getElementById('vendor-services');
+
+        // Service elements
+        const servicesList = document.getElementById('services-list');
+        const noServices = document.getElementById('no-services');
+        const serviceSearch = document.getElementById('service-search');
+        const serviceModal = document.getElementById('service-modal');
+        const serviceForm = document.getElementById('service-form');
+        const serviceVendorsSelect = document.getElementById('service-vendors');
+
+        // Interaction elements
+        const interactionsList = document.getElementById('interactions-list');
+        const noInteractions = document.getElementById('no-interactions');
+        const interactionVendorFilter = document.getElementById('interaction-vendor-filter');
+        const interactionTypeFilter = document.getElementById('interaction-type-filter');
+        const interactionModal = document.getElementById('interaction-modal');
+        const interactionForm = document.getElementById('interaction-form');
+
+        // Reminder elements
+        const remindersList = document.getElementById('reminders-list');
+        const noReminders = document.getElementById('no-reminders');
+        const reminderModal = document.getElementById('reminder-modal');
+        const reminderForm = document.getElementById('reminder-form');
+
+        // General modal elements
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmMessage = document.getElementById('confirm-message');
+        const confirmActionBtn = document.getElementById('confirm-action-btn');
+        const cancelConfirmBtn = document.getElementById('cancel-confirm-btn');
+
+        // Current state
+        let currentTab = 'vendors';
+        let currentAction = null;
+        let currentItemId = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // Vendor events
+            document.getElementById('add-vendor-btn').addEventListener('click', () => openVendorModal());
+            document.getElementById('cancel-vendor-btn').addEventListener('click', () => closeModal(vendorModal));
+            vendorForm.addEventListener('submit', handleVendorSubmit);
+            vendorSearch.addEventListener('input', filterVendors);
+            vendorFilter.addEventListener('change', filterVendors);
+
+            // Service events
+            document.getElementById('add-service-btn').addEventListener('click', () => openServiceModal());
+            document.getElementById('cancel-service-btn').addEventListener('click', () => closeModal(serviceModal));
+            serviceForm.addEventListener('submit', handleServiceSubmit);
+            serviceSearch.addEventListener('input', filterServices);
+
+            // Interaction events
+            document.getElementById('add-interaction-btn').addEventListener('click', () => openInteractionModal());
+            document.getElementById('cancel-interaction-btn').addEventListener('click', () => closeModal(interactionModal));
+            interactionForm.addEventListener('submit', handleInteractionSubmit);
+            interactionVendorFilter.addEventListener('input', filterInteractions);
+            interactionTypeFilter.addEventListener('change', filterInteractions);
+
+            // Reminder events
+            document.getElementById('add-reminder-btn').addEventListener('click', () => openReminderModal());
+            document.getElementById('cancel-reminder-btn').addEventListener('click', () => closeModal(reminderModal));
+            reminderForm.addEventListener('submit', handleReminderSubmit);
+
+            // General modal events
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target);
+                }
+            });
+
+            // Confirmation modal events
+            cancelConfirmBtn.addEventListener('click', () => closeModal(confirmModal));
+            confirmActionBtn.addEventListener('click', confirmAction);
+
+            // Premium button
+            document.getElementById('premium-btn').addEventListener('click', () => {
+                showAlert('Upgrade to VendorLink Premium for additional features!', 'info');
+            });
+
+            // Load initial data
+            renderVendors();
+            renderServices();
+            renderInteractions();
+            renderReminders();
+
+            // Add demo data if empty
+            if (vendors.length === 0 && services.length === 0 && interactions.length === 0 && reminders.length === 0) {
+                addDemoData();
+            }
+        });
+
+        // Tab switching
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            // Update active tab styling
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            // Show the corresponding content
+            tabContents.forEach(content => {
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        // Vendor functions
+        function renderVendors() {
+            vendorsList.innerHTML = '';
+            
+            if (vendors.length === 0) {
+                noVendors.style.display = 'block';
+                return;
+            }
+            
+            noVendors.style.display = 'none';
+            
+            vendors.forEach(vendor => {
+                const servicesText = vendor.services && vendor.services.length > 0 
+                    ? vendor.services.join(', ') 
+                    : 'No services';
+                
+                const statusBadge = vendor.status === 'active' 
+                    ? '<span class="status-badge active">Active</span>' 
+                    : '<span class="status-badge inactive">Inactive</span>';
+                
+                const row = `
+                    <tr>
+                        <td><strong>${vendor.name}</strong></td>
+                        <td>${vendor.contact || '-'}<br>${vendor.phone || '-'}</td>
+                        <td class="service-list">${servicesText}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="action-btn edit-vendor" data-id="${vendor.id}">✏️</button>
+                            <button class="action-btn delete-vendor" data-id="${vendor.id}">🗑️</button>
+                            <button class="action-btn add-interaction-for-vendor" data-id="${vendor.id}" title="Add Interaction">📝</button>
+                        </td>
+                    </tr>
+                `;
+                
+                vendorsList.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Add event listeners to vendor action buttons
+            document.querySelectorAll('.edit-vendor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const vendorId = this.getAttribute('data-id');
+                    openVendorModal(vendorId);
+                });
+            });
+
+            document.querySelectorAll('.delete-vendor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const vendorId = this.getAttribute('data-id');
+                    showDeleteConfirmation('vendor', vendorId);
+                });
+            });
+
+            document.querySelectorAll('.add-interaction-for-vendor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const vendorId = this.getAttribute('data-id');
+                    openInteractionModal(null, vendorId);
+                });
+            });
+        }
+
+        function filterVendors() {
+            const searchTerm = vendorSearch.value.toLowerCase();
+            const statusFilter = vendorFilter.value;
+            
+            vendors.forEach(vendor => {
+                const row = document.querySelector(`.edit-vendor[data-id="${vendor.id}"]`).closest('tr');
+                const matchesSearch = vendor.name.toLowerCase().includes(searchTerm) || 
+                                     (vendor.contact && vendor.contact.toLowerCase().includes(searchTerm)) ||
+                                     (vendor.phone && vendor.phone.toLowerCase().includes(searchTerm));
+                
+                const matchesStatus = statusFilter === 'all' || vendor.status === statusFilter;
+                
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function openVendorModal(vendorId = null) {
+            const modalTitle = document.getElementById('vendor-modal-title');
+            const form = document.getElementById('vendor-form');
+            
+            if (vendorId) {
+                // Edit existing vendor
+                const vendor = vendors.find(v => v.id === vendorId);
+                if (!vendor) return;
+                
+                modalTitle.textContent = 'Edit Vendor';
+                document.getElementById('vendor-id').value = vendor.id;
+                document.getElementById('vendor-name').value = vendor.name;
+                document.getElementById('vendor-contact').value = vendor.contact || '';
+                document.getElementById('vendor-phone').value = vendor.phone || '';
+                document.getElementById('vendor-email').value = vendor.email || '';
+                document.getElementById('vendor-address').value = vendor.address || '';
+                document.getElementById('vendor-terms').value = vendor.paymentTerms || '';
+                document.getElementById('vendor-status').value = vendor.status;
+                document.getElementById('vendor-notes').value = vendor.notes || '';
+                
+                // Clear and repopulate service tags
+                vendorServiceTags.innerHTML = '';
+                if (vendor.services && vendor.services.length > 0) {
+                    vendor.services.forEach(service => {
+                        const chip = document.createElement('div');
+                        chip.className = 'chip';
+                        chip.textContent = service;
+                        vendorServiceTags.appendChild(chip);
+                    });
+                }
+            } else {
+                // Add new vendor
+                modalTitle.textContent = 'Add New Vendor';
+                form.reset();
+                document.getElementById('vendor-id').value = '';
+                vendorServiceTags.innerHTML = '';
+            }
+            
+            // Populate services dropdown
+            vendorServicesSelect.innerHTML = '';
+            const availableServices = services.map(s => s.name);
+            const vendorServices = vendorId ? vendors.find(v => v.id === vendorId).services || [] : [];
+            
+            availableServices.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service;
+                option.textContent = service;
+                option.selected = vendorServices.includes(service);
+                vendorServicesSelect.appendChild(option);
+            });
+            
+            vendorServicesSelect.addEventListener('change', function() {
+                vendorServiceTags.innerHTML = '';
+                Array.from(this.selectedOptions).forEach(option => {
+                    const chip = document.createElement('div');
+                    chip.className = 'chip';
+                    chip.textContent = option.value;
+                    vendorServiceTags.appendChild(chip);
+                });
+            });
+            
+            openModal(vendorModal);
+        }
+
+        function handleVendorSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('vendor-id').value;
+            const name = document.getElementById('vendor-name').value;
+            const contact = document.getElementById('vendor-contact').value;
+            const phone = document.getElementById('vendor-phone').value;
+            const email = document.getElementById('vendor-email').value;
+            const address = document.getElementById('vendor-address').value;
+            const paymentTerms = document.getElementById('vendor-terms').value;
+            const status = document.getElementById('vendor-status').value;
+            const notes = document.getElementById('vendor-notes').value;
+            
+            // Get selected services
+            const serviceOptions = document.getElementById('vendor-services').selectedOptions;
+            const selectedServices = Array.from(serviceOptions).map(option => option.value);
+            
+            if (!name) {
+                showAlert('Vendor name is required', 'error');
+                return;
+            }
+            
+            const vendorData = {
+                id: id || generateId(),
+                name,
+                contact,
+                phone,
+                email,
+                address,
+                services: selectedServices,
+                paymentTerms,
+                status,
+                notes,
+                createdAt: id ? vendors.find(v => v.id === id).createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (id) {
+                // Update existing vendor
+                const index = vendors.findIndex(v => v.id === id);
+                vendors[index] = vendorData;
+                showAlert('Vendor updated successfully', 'success');
+            } else {
+                // Add new vendor
+                vendors.push(vendorData);
+                showAlert('Vendor added successfully', 'success');
+            }
+            
+            saveVendors();
+            closeModal(vendorModal);
+            renderVendors();
+        }
+
+        // Service functions
+        function renderServices() {
+            servicesList.innerHTML = '';
+            
+            if (services.length === 0) {
+                noServices.style.display = 'block';
+                return;
+            }
+            
+            noServices.style.display = 'none';
+            
+            services.forEach(service => {
+                const vendorCount = service.vendors ? service.vendors.length : 0;
+                
+                const row = `
+                    <tr>
+                        <td><strong>${service.name}</strong><br><small>${service.description || ''}</small></td>
+                        <td>${service.category || 'Uncategorized'}</td>
+                        <td>
+                            ${vendorCount > 0 
+                                ? `<span class="badge badge-primary">${vendorCount} vendor${vendorCount > 1 ? 's' : ''}</span>` 
+                                : 'No vendors'}
+                        </td>
+                        <td>
+                            <button class="action-btn edit-service" data-id="${service.id}">✏️</button>
+                            <button class="action-btn delete-service" data-id="${service.id}">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+                
+                servicesList.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Add event listeners to service action buttons
+            document.querySelectorAll('.edit-service').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const serviceId = this.getAttribute('data-id');
+                    openServiceModal(serviceId);
+                });
+            });
+
+            document.querySelectorAll('.delete-service').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const serviceId = this.getAttribute('data-id');
+                    showDeleteConfirmation('service', serviceId);
+                });
+            });
+        }
+
+        function filterServices() {
+            const searchTerm = serviceSearch.value.toLowerCase();
+            
+            services.forEach(service => {
+                const row = document.querySelector(`.edit-service[data-id="${service.id}"]`).closest('tr');
+                const matchesSearch = service.name.toLowerCase().includes(searchTerm) || 
+                                     (service.description && service.description.toLowerCase().includes(searchTerm)) ||
+                                     (service.category && service.category.toLowerCase().includes(searchTerm));
+                
+                if (matchesSearch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function openServiceModal(serviceId = null) {
+            const modalTitle = document.getElementById('service-modal-title');
+            const form = document.getElementById('service-form');
+            
+            if (serviceId) {
+                // Edit existing service
+                const service = services.find(s => s.id === serviceId);
+                if (!service) return;
+                
+                modalTitle.textContent = 'Edit Service';
+                document.getElementById('service-id').value = service.id;
+                document.getElementById('service-name').value = service.name;
+                document.getElementById('service-category').value = service.category || '';
+                document.getElementById('service-description').value = service.description || '';
+            } else {
+                // Add new service
+                modalTitle.textContent = 'Add New Service';
+                form.reset();
+                document.getElementById('service-id').value = '';
+            }
+            
+            // Populate vendors dropdown
+            serviceVendorsSelect.innerHTML = '';
+            vendors.forEach(vendor => {
+                const option = document.createElement('option');
+                option.value = vendor.id;
+                option.textContent = vendor.name;
+                option.selected = serviceId 
+                    ? services.find(s => s.id === serviceId).vendors?.includes(vendor.id) || false 
+                    : false;
+                serviceVendorsSelect.appendChild(option);
+            });
+            
+            openModal(serviceModal);
+        }
+
+        function handleServiceSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('service-id').value;
+            const name = document.getElementById('service-name').value;
+            const category = document.getElementById('service-category').value;
+            const description = document.getElementById('service-description').value;
+            
+            // Get selected vendors
+            const vendorOptions = document.getElementById('service-vendors').selectedOptions;
+            const selectedVendors = Array.from(vendorOptions).map(option => option.value);
+            
+            if (!name) {
+                showAlert('Service name is required', 'error');
+                return;
+            }
+            
+            const serviceData = {
+                id: id || generateId(),
+                name,
+                category,
+                description,
+                vendors: selectedVendors,
+                createdAt: id ? services.find(s => s.id === id).createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (id) {
+                // Update existing service
+                const index = services.findIndex(s => s.id === id);
+                services[index] = serviceData;
+                showAlert('Service updated successfully', 'success');
+            } else {
+                // Add new service
+                services.push(serviceData);
+                showAlert('Service added successfully', 'success');
+            }
+            
+            saveServices();
+            closeModal(serviceModal);
+            renderServices();
+            
+            // Also update vendors since services might have changed
+            renderVendors();
+        }
+
+        // Interaction functions
+        function renderInteractions() {
+            interactionsList.innerHTML = '';
+            
+            if (interactions.length === 0) {
+                noInteractions.style.display = 'block';
+                return;
+            }
+            
+            noInteractions.style.display = 'none';
+            
+            // Sort by date (newest first)
+            const sortedInteractions = [...interactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedInteractions.forEach(interaction => {
+                const vendor = vendors.find(v => v.id === interaction.vendorId);
+                const vendorName = vendor ? vendor.name : 'Unknown Vendor';
+                
+                const amount = interaction.amount ? `$${parseFloat(interaction.amount).toFixed(2)}` : '-';
+                
+                const row = `
+                    <tr>
+                        <td>${formatDate(interaction.date)}</td>
+                        <td>${vendorName}</td>
+                        <td><span class="badge">${capitalizeFirstLetter(interaction.type)}</span></td>
+                        <td>${interaction.details || '-'}</td>
+                        <td>${amount}</td>
+                        <td>
+                            <button class="action-btn edit-interaction" data-id="${interaction.id}">✏️</button>
+                            <button class="action-btn delete-interaction" data-id="${interaction.id}">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+                
+                interactionsList.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Add event listeners to interaction action buttons
+            document.querySelectorAll('.edit-interaction').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const interactionId = this.getAttribute('data-id');
+                    openInteractionModal(interactionId);
+                });
+            });
+
+            document.querySelectorAll('.delete-interaction').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const interactionId = this.getAttribute('data-id');
+                    showDeleteConfirmation('interaction', interactionId);
+                });
+            });
+        }
+
+        function filterInteractions() {
+            const vendorFilter = interactionVendorFilter.value.toLowerCase();
+            const typeFilter = interactionTypeFilter.value;
+            
+            interactions.forEach(interaction => {
+                const row = document.querySelector(`.edit-interaction[data-id="${interaction.id}"]`).closest('tr');
+                const vendor = vendors.find(v => v.id === interaction.vendorId);
+                const vendorName = vendor ? vendor.name.toLowerCase() : '';
+                
+                const matchesVendor = vendorName.includes(vendorFilter);
+                const matchesType = typeFilter === 'all' || interaction.type === typeFilter;
+                
+                if (matchesVendor && matchesType) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function openInteractionModal(interactionId = null, vendorId = null) {
+            const modalTitle = document.getElementById('interaction-modal-title');
+            const form = document.getElementById('interaction-form');
+            
+            if (interactionId) {
+                // Edit existing interaction
+                const interaction = interactions.find(i => i.id === interactionId);
+                if (!interaction) return;
+                
+                modalTitle.textContent = 'Edit Interaction';
+                document.getElementById('interaction-id').value = interaction.id;
+                document.getElementById('interaction-date').value = interaction.date;
+                document.getElementById('interaction-type').value = interaction.type;
+                document.getElementById('interaction-details').value = interaction.details || '';
+                document.getElementById('interaction-amount').value = interaction.amount || '';
+                document.getElementById('interaction-reference').value = interaction.reference || '';
+            } else {
+                // Add new interaction
+                modalTitle.textContent = 'Add New Interaction';
+                form.reset();
+                document.getElementById('interaction-id').value = '';
+                document.getElementById('interaction-date').value = new Date().toISOString().split('T')[0];
+                
+                if (vendorId) {
+                    document.getElementById('interaction-vendor').value = vendorId;
+                }
+            }
+            
+            // Populate vendors dropdown
+            const vendorSelect = document.getElementById('interaction-vendor');
+            vendorSelect.innerHTML = '<option value="">Select Vendor</option>';
+            
+            vendors.forEach(vendor => {
+                const option = document.createElement('option');
+                option.value = vendor.id;
+                option.textContent = vendor.name;
+                vendorSelect.appendChild(option);
+            });
+            
+            // Set the vendor if there's a vendorId (from "Add Interaction" button on vendor row)
+            if (vendorId && !interactionId) {
+                document.getElementById('interaction-vendor').value = vendorId;
+            }
+            
+            openModal(interactionModal);
+        }
+
+        function handleInteractionSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('interaction-id').value;
+            const date = document.getElementById('interaction-date').value;
+            const vendorId = document.getElementById('interaction-vendor').value;
+            const type = document.getElementById('interaction-type').value;
+            const details = document.getElementById('interaction-details').value;
+            const amount = document.getElementById('interaction-amount').value;
+            const reference = document.getElementById('interaction-reference').value;
+            
+            if (!date || !vendorId || !type) {
+                showAlert('Date, vendor, and type are required', 'error');
+                return;
+            }
+            
+            const interactionData = {
+                id: id || generateId(),
+                date,
+                vendorId,
+                type,
+                details,
+                amount,
+                reference,
+                createdAt: id ? interactions.find(i => i.id === id).createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (id) {
+                // Update existing interaction
+                const index = interactions.findIndex(i => i.id === id);
+                interactions[index] = interactionData;
+                showAlert('Interaction updated successfully', 'success');
+            } else {
+                // Add new interaction
+                interactions.push(interactionData);
+                showAlert('Interaction added successfully', 'success');
+            }
+            
+            saveInteractions();
+            closeModal(interactionModal);
+            renderInteractions();
+        }
+
+        // Reminder functions
+        function renderReminders() {
+            remindersList.innerHTML = '';
+            
+            if (reminders.length === 0) {
+                noReminders.style.display = 'block';
+                return;
+            }
+            
+            noReminders.style.display = 'none';
+            
+            // Sort by date (earliest first)
+            const sortedReminders = [...reminders].sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            sortedReminders.forEach(reminder => {
+                const vendor = vendors.find(v => v.id === reminder.vendorId);
+                const vendorName = vendor ? `with ${vendor.name}` : '';
+                
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const reminderDate = new Date(reminder.date);
+                reminderDate.setHours(0, 0, 0, 0);
+                
+                const isToday = reminderDate.getTime() === today.getTime();
+                const isPast = reminderDate < today;
+                
+                const cardClass = isToday ? 'today-reminders' : isPast ? 'past-reminders' : '';
+                
+                const row = `
+                    <div class="reminder-card ${cardClass}">
+                        <div class="reminder-header">
+                            <div class="reminder-title">${reminder.title}</div>
+                            <div>
+                                <button class="action-btn complete-reminder" data-id="${reminder.id}" title="Mark Complete">✓</button>
+                                <button class="action-btn edit-reminder" data-id="${reminder.id}" title="Edit">✏️</button>
+                                <button class="action-btn delete-reminder" data-id="${reminder.id}" title="Delete">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="reminder-details">
+                            <span>Due: ${formatDate(reminder.date)}</span>
+                            <span>${vendorName}</span>
+                            <span>Type: ${capitalizeFirstLetter(reminder.type)}</span>
+                        </div>
+                        ${reminder.notes ? `<div class="reminder-notes">${reminder.notes}</div>` : ''}
+                    </div>
+                `;
+                
+                remindersList.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Add event listeners to reminder action buttons
+            document.querySelectorAll('.complete-reminder').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reminderId = this.getAttribute('data-id');
+                    markReminderComplete(reminderId);
+                });
+            });
+
+            document.querySelectorAll('.edit-reminder').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reminderId = this.getAttribute('data-id');
+                    openReminderModal(reminderId);
+                });
+            });
+
+            document.querySelectorAll('.delete-reminder').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reminderId = this.getAttribute('data-id');
+                    showDeleteConfirmation('reminder', reminderId);
+                });
+            });
+        }
+
+        function openReminderModal(reminderId = null) {
+            const modalTitle = document.getElementById('reminder-modal-title');
+            const form = document.getElementById('reminder-form');
+            
+            if (reminderId) {
+                // Edit existing reminder
+                const reminder = reminders.find(r => r.id === reminderId);
+                if (!reminder) return;
+                
+                modalTitle.textContent = 'Edit Reminder';
+                document.getElementById('reminder-id').value = reminder.id;
+                document.getElementById('reminder-title').value = reminder.title;
+                document.getElementById('reminder-date').value = reminder.date;
+                document.getElementById('reminder-type').value = reminder.type;
+                document.getElementById('reminder-notes').value = reminder.notes || '';
+            } else {
+                // Add new reminder
+                modalTitle.textContent = 'Add New Reminder';
+                form.reset();
+                document.getElementById('reminder-id').value = '';
+                document.getElementById('reminder-date').value = new Date().toISOString().split('T')[0];
+            }
+            
+            // Populate vendors dropdown
+            const vendorSelect = document.getElementById('reminder-vendor');
+            vendorSelect.innerHTML = '<option value="">Select Vendor (Optional)</option>';
+            
+            vendors.forEach(vendor => {
+                const option = document.createElement('option');
+                option.value = vendor.id;
+                option.textContent = vendor.name;
+                vendorSelect.appendChild(option);
+            });
+            
+            // Set the vendor if editing an existing reminder with a vendor
+            if (reminderId && reminders.find(r => r.id === reminderId).vendorId) {
+                document.getElementById('reminder-vendor').value = reminders.find(r => r.id === reminderId).vendorId;
+            }
+            
+            openModal(reminderModal);
+        }
+
+        function handleReminderSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('reminder-id').value;
+            const title = document.getElementById('reminder-title').value;
+            const date = document.getElementById('reminder-date').value;
+            const vendorId = document.getElementById('reminder-vendor').value;
+            const type = document.getElementById('reminder-type').value;
+            const notes = document.getElementById('reminder-notes').value;
+            
+            if (!title || !date) {
+                showAlert('Title and date are required', 'error');
+                return;
+            }
+            
+            const reminderData = {
+                id: id || generateId(),
+                title,
+                date,
+                vendorId: vendorId || null,
+                type,
+                notes,
+                completed: false,
+                createdAt: id ? reminders.find(r => r.id === id).createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (id) {
+                // Update existing reminder
+                const index = reminders.findIndex(r => r.id === id);
+                reminders[index] = reminderData;
+                showAlert('Reminder updated successfully', 'success');
+            } else {
+                // Add new reminder
+                reminders.push(reminderData);
+                showAlert('Reminder added successfully', 'success');
+            }
+            
+            saveReminders();
+            closeModal(reminderModal);
+            renderReminders();
+        }
+
+        function markReminderComplete(reminderId) {
+            const index = reminders.findIndex(r => r.id === reminderId);
+            if (index === -1) return;
+            
+            reminders[index].completed = true;
+            reminders[index].completedAt = new Date().toISOString();
+            
+            saveReminders();
+            renderReminders();
+            showAlert('Reminder marked as complete', 'success');
+        }
+
+        // General functions
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substring(2);
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function openModal(modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <span>${message}</span>
+                <button class="close-alert">&times;</button>
+            `;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.add('fade-out');
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 300);
+            }, 5000);
+            
+            // Close button
+            alertDiv.querySelector('.close-alert').addEventListener('click', () => {
+                alertDiv.remove();
+            });
+        }
+
+        function showDeleteConfirmation(type, id) {
+            currentAction = 'delete';
+            currentItemId = id;
+            
+            let message = '';
+            let itemName = '';
+            
+            switch (type) {
+                case 'vendor':
+                    const vendor = vendors.find(v => v.id === id);
+                    itemName = vendor?.name || 'this vendor';
+                    message = `Are you sure you want to delete ${itemName}? This will also delete related interactions.`;
+                    break;
+                case 'service':
+                    const service = services.find(s => s.id === id);
+                    itemName = service?.name || 'this service';
+                    message = `Are you sure you want to delete ${itemName}?`;
+                    break;
+                case 'interaction':
+                    const interaction = interactions.find(i => i.id === id);
+                    const interactionVendor = vendors.find(v => v.id === interaction?.vendorId);
+                    itemName = interactionVendor ? `this interaction with ${interactionVendor.name}` : 'this interaction';
+                    message = `Are you sure you want to delete ${itemName}?`;
+                    break;
+                case 'reminder':
+                    const reminder = reminders.find(r => r.id === id);
+                    itemName = reminder?.title || 'this reminder';
+                    message = `Are you sure you want to delete ${itemName}?`;
+                    break;
+                default:
+                    message = 'Are you sure you want to perform this action?';
+            }
+            
+            confirmMessage.textContent = message;
+            confirmModal.style.display = 'flex';
+        }
+
+        function confirmAction() {
+            switch (currentAction) {
+                case 'delete':
+                    handleDelete();
+                    break;
+                default:
+                    break;
+            }
+            
+            closeModal(confirmModal);
+        }
+
+        function handleDelete() {
+            if (!currentItemId) return;
+            
+            // Determine what to delete based on current tab
+            switch (currentTab) {
+                case 'vendors':
+                    deleteVendor(currentItemId);
+                    break;
+                case 'services':
+                    deleteService(currentItemId);
+                    break;
+                case 'interactions':
+                    deleteInteraction(currentItemId);
+                    break;
+                case 'reminders':
+                    deleteReminder(currentItemId);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function deleteVendor(vendorId) {
+            vendors = vendors.filter(v => v.id !== vendorId);
+            
+            // Also delete interactions associated with this vendor
+            interactions = interactions.filter(i => i.vendorId !== vendorId);
+            
+            // Remove vendor from services
+            services.forEach(service => {
+                if (service.vendors) {
+                    service.vendors = service.vendors.filter(id => id !== vendorId);
+                }
+            });
+            
+            saveVendors();
+            saveInteractions();
+            saveServices();
+            renderVendors();
+            renderInteractions();
+            renderServices();
+            
+            showAlert('Vendor deleted successfully', 'success');
+        }
+
+        function deleteService(serviceId) {
+            services = services.filter(s => s.id !== serviceId);
+            
+            // Remove this service from vendors
+            vendors.forEach(vendor => {
+                if (vendor.services) {
+                    const serviceName = services.find(s => s.id === serviceId)?.name;
+                    if (serviceName) {
+                        vendor.services = vendor.services.filter(name => name !== serviceName);
+                    }
+                }
+            });
+            
+            saveServices();
+            saveVendors();
+            renderServices();
+            renderVendors();
+            
+            showAlert('Service deleted successfully', 'success');
+        }
+
+        function deleteInteraction(interactionId) {
+            interactions = interactions.filter(i => i.id !== interactionId);
+            saveInteractions();
+            renderInteractions();
+            showAlert('Interaction deleted successfully', 'success');
+        }
+
+        function deleteReminder(reminderId) {
+            reminders = reminders.filter(r => r.id !== reminderId);
+            saveReminders();
+            renderReminders();
+            showAlert('Reminder deleted successfully', 'success');
+        }
+
+        // Data persistence functions
+        function saveVendors() {
+            localStorage.setItem('vendors', JSON.stringify(vendors));
+        }
+
+        function saveServices() {
+            localStorage.setItem('services', JSON.stringify(services));
+        }
+
+        function saveInteractions() {
+            localStorage.setItem('interactions', JSON.stringify(interactions));
+        }
+
+        function saveReminders() {
+            localStorage.setItem('reminders', JSON.stringify(reminders));
+        }
+
+        // Demo data - add this only if the storage is empty
+        function addDemoData() {
+            // Demo vendors
+            const demoVendors = [
+                {
+                    id: generateId(),
+                    name: 'Fresh Produce Co.',
+                    contact: 'Sarah Johnson',
+                    phone: '(555) 123-4567',
+                    email: 'sarah@freshproduce.com',
+                    address: '123 Farm Lane, Agricultural City',
+                    services: ['Fresh Vegetables', 'Organic Fruits'],
+                    paymentTerms: 'Net 30',
+                    status: 'active',
+                    notes: 'Excellent quality seasonal produce',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'Quality Meats Ltd',
+                    contact: 'Michael Brown',
+                    phone: '(555) 987-6543',
+                    email: 'sales@qualitymeats.com',
+                    address: '456 Butcher Street, Meatville',
+                    services: ['Premium Beef', 'Free-Range Chicken', 'Heritage Pork'],
+                    paymentTerms: 'Net 15',
+                    status: 'active',
+                    notes: 'Specializes in organic, grass-fed meats',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'Beverage Distributors Inc',
+                    contact: 'Lisa Williams',
+                    phone: '(555) 456-7890',
+                    email: 'lisa@beveragedist.com',
+                    address: '789 Refreshment Road, Drinkton',
+                    services: ['Soft Drinks', 'Craft Beer', 'Premium Spirits'],
+                    paymentTerms: 'Net 30',
+                    status: 'inactive',
+                    notes: 'Currently transitioning to new warehouse',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                }
+            ];
+            
+            // Demo services
+            const demoServices = [
+                {
+                    id: generateId(),
+                    name: 'Fresh Vegetables',
+                    category: 'Produce',
+                    description: 'Seasonal fresh vegetables locally sourced',
+                    vendors: [demoVendors[0].id],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'Organic Fruits',
+                    category: 'Produce',
+                    description: 'Certified organic fruits from local farms',
+                    vendors: [demoVendors[0].id],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'Premium Beef',
+                    category: 'Meat',
+                    description: 'Grass-fed, organic beef cuts',
+                    vendors: [demoVendors[1].id],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'Craft Beer',
+                    category: 'Beverage',
+                    description: 'Local and imported craft beers',
+                    vendors: [demoVendors[2].id],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                }
+            ];
+            
+            // Fix vendor service names to match demo services
+            demoVendors[0].services = ['Fresh Vegetables', 'Organic Fruits'];
+            demoVendors[1].services = ['Premium Beef', 'Free-Range Chicken', 'Heritage Pork'];
+            demoVendors[2].services = ['Soft Drinks', 'Craft Beer', 'Premium Spirits'];
+            
+            // Demo interactions
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const lastWeek = new Date(today);
+            lastWeek.setDate(lastWeek.getDate() - 7);
+            
+            const demoInteractions = [
+                {
+                    id: generateId(),
+                    date: today.toISOString().split('T')[0],
+                    vendorId: demoVendors[0].id,
+                    type: 'order',
+                    details: 'Placed order for weekly vegetable delivery',
+                    amount: '450.00',
+                    reference: 'VEG-2023-045',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    date: yesterday.toISOString().split('T')[0],
+                    vendorId: demoVendors[1].id,
+                    type: 'payment',
+                    details: 'Invoice #MB-987 paid',
+                    amount: '1280.50',
+                    reference: 'PAY-2023-112',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    date: lastWeek.toISOString().split('T')[0],
+                    vendorId: demoVendors[2].id,
+                    type: 'meeting',
+                    details: 'Discussed new product line for summer season',
+                    amount: '',
+                    reference: '',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                }
+            ];
+            
+            // Demo reminders
+            const nextWeek = new Date(today);
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            const twoWeeks = new Date(today);
+            twoWeeks.setDate(twoWeeks.getDate() + 14);
+            
+            const demoReminders = [
+                {
+                    id: generateId(),
+                    title: 'Follow up with Fresh Produce',
+                    date: nextWeek.toISOString().split('T')[0],
+                    vendorId: demoVendors[0].id,
+                    type: 'followup',
+                    notes: 'Check on new seasonal vegetable availability',
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    title: 'Meat order for summer event',
+                    date: twoWeeks.toISOString().split('T')[0],
+                    vendorId: demoVendors[1].id,
+                    type: 'order',
+                    notes: 'Need to place bulk order for summer festival',
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                }
+            ];
+            
+            // Save all demo data
+            vendors = demoVendors;
+            services = demoServices;
+            interactions = demoInteractions;
+            reminders = demoReminders;
+            
+            saveVendors();
+            saveServices();
+            saveInteractions();
+            saveReminders();
+            
+            // Render all tabs
+            renderVendors();
+            renderServices();
+            renderInteractions();
+            renderReminders();
+            
+            showAlert('Demo data loaded successfully. You can now explore the system.', 'success');
+        }
+    </script>
+</body>
+</html>
+
+```
+
+
+
+
